@@ -16,9 +16,12 @@
 package be.objectify.deadbolt.java;
 
 import be.objectify.deadbolt.core.models.Subject;
+import play.core.j.FPromiseHelper;
+import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import play.mvc.SimpleResult;
 
 /**
  * Abstract implementation of {@link DeadboltHandler} that gives a standard unauthorised result when access fails.
@@ -38,10 +41,9 @@ public abstract class AbstractDeadboltHandler extends Results implements Deadbol
     /**
      * {@inheritDoc}
      */
-    public Result onAuthFailure(Http.Context context,
-                                String content)
+    public F.Promise<SimpleResult> onAuthFailure(Http.Context context, String content)
     {
-        return unauthorized(views.html.defaultpages.unauthorized.render());
+        return FPromiseHelper.pure((SimpleResult)unauthorized(views.html.defaultpages.unauthorized.render()));
     }
 
     /**

@@ -16,8 +16,9 @@
 package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
+import play.libs.F;
 import play.mvc.Http;
-import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 /**
  * Convenience class for checking if an qction has already been authorised before applying the restrictions.
@@ -27,9 +28,9 @@ import play.mvc.Result;
 public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltAction<T>
 {
     @Override
-    public Result execute(Http.Context ctx) throws Throwable
+    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
     {
-        Result result;
+        F.Promise<SimpleResult> result;
         if (isActionAuthorised(ctx))
         {
             result = delegate.call(ctx);
@@ -41,8 +42,7 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
 
             if (result == null)
             {
-                result = applyRestriction(ctx,
-                                          deadboltHandler);
+                result = applyRestriction(ctx, deadboltHandler);
             }
         }
         return result;
@@ -50,6 +50,5 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
 
     public abstract Class<? extends DeadboltHandler> getDeadboltHandlerClass();
 
-    public abstract Result applyRestriction(Http.Context ctx,
-                                            DeadboltHandler deadboltHandler) throws Throwable;
+    public abstract F.Promise<SimpleResult> applyRestriction(Http.Context ctx, DeadboltHandler deadboltHandler) throws Throwable;
 }

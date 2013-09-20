@@ -15,8 +15,9 @@
  */
 package be.objectify.deadbolt.java.actions;
 
+import play.libs.F;
 import play.mvc.Http;
-import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 /**
  * Implements the {@link Unrestricted} functionality, i.e. there are no restrictions on the resource.
@@ -29,14 +30,12 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
      * {@inheritDoc}
      */
     @Override
-    public Result execute(Http.Context ctx) throws Throwable
+    public F.Promise<SimpleResult> execute(Http.Context ctx) throws Throwable
     {
-        Result result;
+        F.Promise<SimpleResult> result;
         if (isActionUnauthorised(ctx))
         {
-            result = onAuthFailure(getDeadboltHandler(configuration.handler()),
-                                   configuration.content(),
-                                   ctx);
+            result = onAuthFailure(getDeadboltHandler(configuration.handler()), configuration.content(), ctx);
         }
         else
         {

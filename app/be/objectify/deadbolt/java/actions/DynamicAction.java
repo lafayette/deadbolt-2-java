@@ -17,9 +17,10 @@ package be.objectify.deadbolt.java.actions;
 
 import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
+import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
-import play.mvc.Result;
+import play.mvc.SimpleResult;
 
 /**
  * A dynamic restriction is user-defined, and so completely arbitrary.  Hence, no checks on subjects, etc, occur
@@ -42,11 +43,11 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
     }
 
     @Override
-    public Result applyRestriction(Http.Context ctx,
-                                   DeadboltHandler deadboltHandler) throws Throwable
+    public F.Promise<SimpleResult> applyRestriction(Http.Context ctx,
+                                                    DeadboltHandler deadboltHandler) throws Throwable
     {
         DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
-        Result result;
+        F.Promise<SimpleResult> result;
 
         if (resourceHandler == null)
         {
@@ -65,9 +66,7 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
             else
             {
                 markActionAsUnauthorised(ctx);
-                result = onAuthFailure(deadboltHandler,
-                                       configuration.content(),
-                                       ctx);
+                result = onAuthFailure(deadboltHandler, configuration.content(), ctx);
             }
         }
         return result;
