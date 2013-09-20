@@ -19,10 +19,12 @@ import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.utils.PluginUtils;
 import be.objectify.deadbolt.java.utils.RequestUtils;
+import play.cache.Cache;
 import play.Logger;
 import play.mvc.Http;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
 /**
@@ -148,16 +150,14 @@ public class DeadboltViewSupport
 
     public static Pattern getPattern(final String patternValue) throws Exception
     {
-        return Pattern.compile(patternValue); // TODO: need cache for java
-
-//        return Cache.getOrElse("Deadbolt." + patternValue,
-//                               new Callable<Pattern>()
-//                               {
-//                                   public Pattern call() throws Exception
-//                                   {
-//                                       return Pattern.compile(patternValue);
-//                                   }
-//                               },
-//                               0);
+        return Cache.getOrElse("Deadbolt." + patternValue,
+                               new Callable<Pattern>()
+                               {
+                                   public Pattern call() throws Exception
+                                   {
+                                       return Pattern.compile(patternValue);
+                                   }
+                               },
+                               0);
     }
 }
