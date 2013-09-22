@@ -155,7 +155,8 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
         catch (Exception e)
         {
             Logger.warn("Deadbolt: Exception when invoking onAuthFailure", e);
-            return FPromiseHelper.pure((SimpleResult)Results.internalServerError());
+            // return FPromiseHelper.pure((SimpleResult)Results.internalServerError());
+            return F.Promise.<SimpleResult>pure(Results.internalServerError());
         }
     }
 
