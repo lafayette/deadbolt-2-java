@@ -20,6 +20,7 @@ import be.objectify.deadbolt.java.DynamicResourceHandler;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.SimpleResult;
 
 /**
@@ -66,7 +67,9 @@ public class DynamicAction extends AbstractRestrictiveAction<Dynamic>
             else
             {
                 markActionAsUnauthorised(ctx);
-                result = onAuthFailure(deadboltHandler, configuration.content(), ctx);
+                result = onAuthFailure(deadboltHandler,
+                                       configuration.content(),
+                                       ctx);
             }
         }
         return result;

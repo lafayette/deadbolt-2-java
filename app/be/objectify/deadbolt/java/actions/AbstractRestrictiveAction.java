@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import be.objectify.deadbolt.java.DeadboltHandler;
 import play.libs.F;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.SimpleResult;
 
 /**
@@ -42,7 +43,8 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
 
             if (result == null)
             {
-                result = applyRestriction(ctx, deadboltHandler);
+                result = applyRestriction(ctx,
+                                          deadboltHandler);
             }
         }
         return result;
@@ -50,5 +52,6 @@ public abstract class AbstractRestrictiveAction<T> extends AbstractDeadboltActio
 
     public abstract Class<? extends DeadboltHandler> getDeadboltHandlerClass();
 
-    public abstract F.Promise<SimpleResult> applyRestriction(Http.Context ctx, DeadboltHandler deadboltHandler) throws Throwable;
+    public abstract F.Promise<SimpleResult> applyRestriction(Http.Context ctx,
+                                                             DeadboltHandler deadboltHandler) throws Throwable;
 }

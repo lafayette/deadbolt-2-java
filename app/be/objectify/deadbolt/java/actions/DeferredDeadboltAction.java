@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java.actions;
 import play.Logger;
 import play.libs.F;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.SimpleResult;
 
 /**
@@ -39,7 +40,8 @@ public class DeferredDeadboltAction extends AbstractDeadboltAction<DeferredDeadb
         }
         else
         {
-            Logger.info(String.format("Executing deferred action [%s]", deferredAction.getClass().getName()));
+            Logger.info(String.format("Executing deferred action [%s]",
+                                      deferredAction.getClass().getName()));
             result = deferredAction.call(ctx);
         }
         return result;

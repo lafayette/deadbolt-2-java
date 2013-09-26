@@ -22,6 +22,7 @@ import be.objectify.deadbolt.java.JavaDeadboltAnalyzer;
 import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.SimpleResult;
 
 /**
@@ -42,20 +43,24 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
     }
 
     @Override
-    public F.Promise<SimpleResult> applyRestriction(Http.Context ctx, DeadboltHandler deadboltHandler) throws Throwable
+    public F.Promise<SimpleResult> applyRestriction(Http.Context ctx,
+                                                    DeadboltHandler deadboltHandler) throws Throwable
     {
         F.Promise<SimpleResult> result;
 
         switch (configuration.patternType())
         {
             case EQUALITY:
-                result = equality(ctx, deadboltHandler);
+                result = equality(ctx,
+                                  deadboltHandler);
                 break;
             case REGEX:
-                result = regex(ctx, deadboltHandler);
+                result = regex(ctx,
+                               deadboltHandler);
                 break;
             case CUSTOM:
-                result = custom(ctx, deadboltHandler);
+                result = custom(ctx,
+                                deadboltHandler);
                 break;
             default:
                 throw new RuntimeException("Unknown pattern type: " + configuration.patternType());
@@ -64,14 +69,16 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return result;
     }
 
-    private F.Promise<SimpleResult> custom(Http.Context ctx, DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<SimpleResult> custom(Http.Context ctx,
+                                           DeadboltHandler deadboltHandler) throws Throwable
     {
         DynamicResourceHandler resourceHandler = deadboltHandler.getDynamicResourceHandler(ctx);
         F.Promise<SimpleResult> result;
 
         if (resourceHandler == null)
         {
-            throw new RuntimeException("A custom permission type is specified but no dynamic resource handler is provided");
+            throw new RuntimeException(
+                    "A custom permission type is specified but no dynamic resource handler is provided");
         }
         else
         {
@@ -85,7 +92,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
             else
             {
                 markActionAsUnauthorised(ctx);
-                result = onAuthFailure(deadboltHandler, configuration.content(), ctx);
+                result = onAuthFailure(deadboltHandler,
+                                       configuration.content(),
+                                       ctx);
             }
         }
         return result;
@@ -96,13 +105,16 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         return configuration.value();
     }
 
-    private F.Promise<SimpleResult> equality(Http.Context ctx, DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<SimpleResult> equality(Http.Context ctx,
+                                             DeadboltHandler deadboltHandler) throws Throwable
     {
         F.Promise<SimpleResult> result;
 
         final String patternValue = getValue();
 
-        if (JavaDeadboltAnalyzer.checkPatternEquality(getSubject(ctx, deadboltHandler), patternValue))
+        if (JavaDeadboltAnalyzer.checkPatternEquality(getSubject(ctx,
+                                                                 deadboltHandler),
+                                                      patternValue))
         {
             markActionAsAuthorised(ctx);
             result = delegate.call(ctx);
@@ -110,7 +122,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         else
         {
             markActionAsUnauthorised(ctx);
-            result = onAuthFailure(deadboltHandler, configuration.content(), ctx);
+            result = onAuthFailure(deadboltHandler,
+                                   configuration.content(),
+                                   ctx);
         }
 
         return result;
@@ -124,7 +138,8 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
      * @return the necessary result
      * @throws Throwable if something needs throwing
      */
-    private F.Promise<SimpleResult> regex(Http.Context ctx, DeadboltHandler deadboltHandler) throws Throwable
+    private F.Promise<SimpleResult> regex(Http.Context ctx,
+                                          DeadboltHandler deadboltHandler) throws Throwable
     {
         F.Promise<SimpleResult> result;
 
@@ -141,7 +156,9 @@ public class PatternAction extends AbstractRestrictiveAction<Pattern>
         else
         {
             markActionAsUnauthorised(ctx);
-            result = onAuthFailure(deadboltHandler, configuration.content(), ctx);
+            result = onAuthFailure(deadboltHandler,
+                                   configuration.content(),
+                                   ctx);
         }
 
         return result;

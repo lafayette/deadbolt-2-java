@@ -18,6 +18,7 @@ package be.objectify.deadbolt.java;
 import be.objectify.deadbolt.core.models.Subject;
 import play.libs.F;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.SimpleResult;
 
 /**
@@ -27,8 +28,7 @@ import play.mvc.SimpleResult;
  *
  * @author Steve Chaloner (steve@objectify.be)
  */
-public interface DeadboltHandler
-{
+public interface DeadboltHandler {
     /**
      * Invoked immediately before controller or view restrictions are checked. This forms the integration with any
      * authentication actions that may need to occur.
@@ -56,7 +56,8 @@ public interface DeadboltHandler
      *                type, e.g. JSON
      * @return the action result
      */
-    F.Promise<SimpleResult> onAuthFailure(Http.Context context, String content);
+    F.Promise<SimpleResult> onAuthFailure(Http.Context context,
+                                          String content);
 
     /**
      * Gets the handler used for dealing with resources restricted to specific users/groups.

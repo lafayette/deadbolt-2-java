@@ -20,6 +20,7 @@ import be.objectify.deadbolt.java.DeadboltHandler;
 import be.objectify.deadbolt.java.utils.RequestUtils;
 import play.libs.F;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.SimpleResult;
 
 /**
@@ -40,7 +41,9 @@ public class SubjectNotPresentAction extends AbstractDeadboltAction<SubjectNotPr
         F.Promise<SimpleResult> result;
         if (isActionUnauthorised(ctx))
         {
-            result = onAuthFailure(getDeadboltHandler(configuration.handler()), configuration.content(), ctx);
+            result = onAuthFailure(getDeadboltHandler(configuration.handler()),
+                                   configuration.content(),
+                                   ctx);
         }
         else
         {
@@ -56,7 +59,9 @@ public class SubjectNotPresentAction extends AbstractDeadboltAction<SubjectNotPr
             else
             {
                 markActionAsUnauthorised(ctx);
-                result = onAuthFailure(deadboltHandler, configuration.content(), ctx);
+                result = onAuthFailure(deadboltHandler,
+                                       configuration.content(),
+                                       ctx);
             }
         }
 

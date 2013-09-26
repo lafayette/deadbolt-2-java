@@ -17,6 +17,7 @@ package be.objectify.deadbolt.java.actions;
 
 import play.libs.F;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.SimpleResult;
 
 /**
@@ -35,7 +36,9 @@ public class UnrestrictedAction extends AbstractDeadboltAction<Unrestricted>
         F.Promise<SimpleResult> result;
         if (isActionUnauthorised(ctx))
         {
-            result = onAuthFailure(getDeadboltHandler(configuration.handler()), configuration.content(), ctx);
+            result = onAuthFailure(getDeadboltHandler(configuration.handler()),
+                                   configuration.content(),
+                                   ctx);
         }
         else
         {

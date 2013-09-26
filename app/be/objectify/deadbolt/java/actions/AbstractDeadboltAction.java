@@ -22,7 +22,6 @@ import be.objectify.deadbolt.java.utils.PluginUtils;
 import be.objectify.deadbolt.java.utils.ReflectionUtils;
 import be.objectify.deadbolt.java.utils.RequestUtils;
 import play.Logger;
-import play.core.j.FPromiseHelper;
 import play.libs.F;
 import play.mvc.*;
 
@@ -78,7 +77,7 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
     @Override
     public F.Promise<SimpleResult> call(Http.Context ctx) throws Throwable
     {
-        F.Promise result;
+        F.Promise<SimpleResult> result;
 
         Class annClass = configuration.getClass();
         if (isDeferred(ctx))
@@ -142,21 +141,28 @@ public abstract class AbstractDeadboltAction<T> extends Action<T>
      * @return the result of {@link DeadboltHandler#onAuthFailure}
      */
     protected F.Promise<SimpleResult> onAuthFailure(DeadboltHandler deadboltHandler,
-                                   String content,
-                                   Http.Context ctx)
+                                                    String content,
+                                                    Http.Context ctx)
     {
         Logger.warn(String.format("Deadbolt: Access failure on [%s]",
                                   ctx.request().uri()));
 
         try
         {
-            return deadboltHandler.onAuthFailure(ctx, content);
+            return deadboltHandler.onAuthFailure(ctx,
+                                                 content);
         }
         catch (Exception e)
         {
-            Logger.warn("Deadbolt: Exception when invoking onAuthFailure", e);
-            // return FPromiseHelper.pure((SimpleResult)Results.internalServerError());
-            return F.Promise.<SimpleResult>pure(Results.internalServerError());
+            Logger.warn("Deadbolt: Exception when invoking onAuthFailure",
+                        e);
+            return F.Promise.promise(new F.Function0<SimpleResult>()
+            {
+                @Override
+                public SimpleResult apply() throws Throwable {
+                    return Results.internalServerError();
+                }
+            });
         }
     }
 
